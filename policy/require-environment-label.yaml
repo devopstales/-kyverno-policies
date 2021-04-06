@@ -1,0 +1,25 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-environment-label
+  annotations:
+    policies.kyverno.io/title: Require environment label
+    policies.kyverno.io/category: Multi-Tenancy
+    policies.kyverno.io/description: >-
+      Require label called environment on namespace.
+spec:
+  validationFailureAction: audit
+#    validationFailureAction: enforce
+  rules:
+  - name: validate-resources
+    match:
+      resources:
+        kinds:
+        - Namespace
+    validate:
+      message: "Label `environment` is required on namespaces."
+      pattern:
+        metadata:
+          labels:
+            environment: "?*"
